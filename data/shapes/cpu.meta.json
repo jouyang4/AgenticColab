@@ -1,0 +1,17 @@
+{
+  "label": "cpu",
+  "new_flags": "",
+  "outcome": "ok",
+  "alloc_seconds": 4,
+  "alloc_rc": 0,
+  "session_line": "[probe-cpu-224738] m-s-usc1b11-19jmco4caz50j | Hardware: CPU | Shape: Standard | Variant: DEFAULT",
+  "cu_per_hour": 0.08,
+  "cu_rate_clean": true,
+  "balance_at_start": 82.44,
+  "balance_after": 82.44,
+  "active_assignments_before": 0.0,
+  "active_assignments_while_live": 1.0,
+  "usage_raw_before": "Current balance: 82.44 compute units Usage rate: 0.00/hr Active assignments: 0",
+  "usage_raw_live": "Current balance: 82.44 compute units Usage rate: 0.08/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 82.44 compute units Usage rate: 0.08/hr Active assignments: 1"
+}

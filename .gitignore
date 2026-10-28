@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# local verification scratch: holds machine-specific absolute paths
+verify/
+
+# supervisor working state, created next to where you run it
+.state-*/
+.lock-*
+.sweep.lock
+.scaling.lock
+bank-*/
+
+# probe logs are noisy; the JSON is the artifact
+data/shapes/*.log

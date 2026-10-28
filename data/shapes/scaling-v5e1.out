@@ -1,0 +1,107 @@
+     1 workers: wall   10.00s  speedup   0.99x  eff  99.4%
+     2 workers: wall   10.23s  speedup   1.94x  eff  97.2%
+     4 workers: wall   11.25s  speedup   3.53x  eff  88.3%
+     6 workers: wall   10.21s  speedup   5.84x  eff  97.3%
+     8 workers: wall   10.91s  speedup   7.29x  eff  91.1%
+    12 workers: wall   10.82s  speedup  11.02x  eff  91.8%
+    24 workers: wall   18.34s  speedup  13.01x  eff  54.2%
+    36 workers: wall   27.95s  speedup  12.80x  eff  35.6%
+    48 workers: wall   36.67s  speedup  13.01x  eff  27.1%
+AGC_JSON_BEGIN
+{
+  "logical_cpus": 24,
+  "task_iters": 78132530,
+  "calibrated_single_task_s": 10.33,
+  "baseline_1worker_s": 9.94,
+  "trials_per_point": 2,
+  "points": {
+    "1": {
+      "wall_s": 10.0,
+      "walls_s": [
+        10.0,
+        10.84
+      ],
+      "speedup_vs_1": 0.99,
+      "efficiency_pct": 99.4
+    },
+    "2": {
+      "wall_s": 10.23,
+      "walls_s": [
+        10.23,
+        10.83
+      ],
+      "speedup_vs_1": 1.94,
+      "efficiency_pct": 97.2
+    },
+    "4": {
+      "wall_s": 11.25,
+      "walls_s": [
+        11.3,
+        11.25
+      ],
+      "speedup_vs_1": 3.53,
+      "efficiency_pct": 88.3
+    },
+    "6": {
+      "wall_s": 10.21,
+      "walls_s": [
+        10.23,
+        10.21
+      ],
+      "speedup_vs_1": 5.84,
+      "efficiency_pct": 97.3
+    },
+    "8": {
+      "wall_s": 10.91,
+      "walls_s": [
+        10.91,
+        11.05
+      ],
+      "speedup_vs_1": 7.29,
+      "efficiency_pct": 91.1
+    },
+    "12": {
+      "wall_s": 10.82,
+      "walls_s": [
+        10.82,
+        11.67
+      ],
+      "speedup_vs_1": 11.02,
+      "efficiency_pct": 91.8
+    },
+    "24": {
+      "wall_s": 18.34,
+      "walls_s": [
+        18.34,
+        18.76
+      ],
+      "speedup_vs_1": 13.01,
+      "efficiency_pct": 54.2
+    },
+    "36": {
+      "wall_s": 27.95,
+      "walls_s": [
+        28.48,
+        27.95
+      ],
+      "speedup_vs_1": 12.8,
+      "efficiency_pct": 35.6
+    },
+    "48": {
+      "wall_s": 36.67,
+      "walls_s": [
+        37.03,
+        36.67
+      ],
+      "speedup_vs_1": 13.01,
+      "efficiency_pct": 27.1
+    }
+  },
+  "peak_speedup": 13.01,
+  "peak_at_workers": 24,
+  "knee_85pct_efficiency_at_workers": 12,
+  "mp_pool_spawn_s": 0.057,
+  "accel_label": "v5e1",
+  "cpu_model": "AMD EPYC 7B13"
+}
+AGC_JSON_END

@@ -1,0 +1,105 @@
+{
+  "logical_cpus": 44,
+  "task_iters": 92621850,
+  "calibrated_single_task_s": 9.92,
+  "baseline_1worker_s": 10.11,
+  "trials_per_point": 2,
+  "points": {
+    "1": {
+      "wall_s": 9.98,
+      "walls_s": [
+        9.98,
+        10.84
+      ],
+      "speedup_vs_1": 1.01,
+      "efficiency_pct": 101.4
+    },
+    "2": {
+      "wall_s": 10.34,
+      "walls_s": [
+        10.34,
+        11.0
+      ],
+      "speedup_vs_1": 1.96,
+      "efficiency_pct": 97.8
+    },
+    "4": {
+      "wall_s": 11.21,
+      "walls_s": [
+        13.87,
+        11.21
+      ],
+      "speedup_vs_1": 3.61,
+      "efficiency_pct": 90.2
+    },
+    "8": {
+      "wall_s": 10.8,
+      "walls_s": [
+        11.13,
+        10.8
+      ],
+      "speedup_vs_1": 7.49,
+      "efficiency_pct": 93.6
+    },
+    "11": {
+      "wall_s": 11.01,
+      "walls_s": [
+        11.98,
+        11.01
+      ],
+      "speedup_vs_1": 10.1,
+      "efficiency_pct": 91.9
+    },
+    "12": {
+      "wall_s": 12.19,
+      "walls_s": [
+        12.19,
+        14.25
+      ],
+      "speedup_vs_1": 9.96,
+      "efficiency_pct": 83.0
+    },
+    "22": {
+      "wall_s": 12.04,
+      "walls_s": [
+        12.2,
+        12.04
+      ],
+      "speedup_vs_1": 18.48,
+      "efficiency_pct": 84.0
+    },
+    "44": {
+      "wall_s": 20.5,
+      "walls_s": [
+        20.6,
+        20.5
+      ],
+      "speedup_vs_1": 21.71,
+      "efficiency_pct": 49.3
+    },
+    "66": {
+      "wall_s": 29.1,
+      "walls_s": [
+        30.48,
+        29.1
+      ],
+      "speedup_vs_1": 22.94,
+      "efficiency_pct": 34.8
+    },
+    "88": {
+      "wall_s": 38.29,
+      "walls_s": [
+        38.38,
+        38.29
+      ],
+      "speedup_vs_1": 23.24,
+      "efficiency_pct": 26.4
+    }
+  },
+  "peak_speedup": 23.24,
+  "peak_at_workers": 88,
+  "knee_85pct_efficiency_at_workers": 11,
+  "mp_pool_spawn_s": 0.032,
+  "accel_label": "v6e1",
+  "cpu_model": "AMD EPYC 9B14"
+}

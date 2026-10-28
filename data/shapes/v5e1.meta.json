@@ -1,0 +1,13 @@
+{
+  "label": "v5e1",
+  "new_flags": "--tpu v5e1",
+  "alloc_seconds": 4,
+  "alloc_rc": 0,
+  "session_line": "[agc-v5e1-207773] tpu-v5e1-s-r-usw4a0-3d4y2hvsyfd4s | Hardware: V5E1 | Shape: Standard | Variant: TPU",
+  "cu_per_hour": 2.92,
+  "balance_at_start": 84.75,
+  "balance_after_work": 84.75,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.75 compute units Usage rate: 2.92/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.75 compute units Usage rate: 2.92/hr Active assignments: 1"
+}

@@ -1,0 +1,213 @@
+/usr/local/lib/python3.13/dist-packages/jax/_src/cloud_tpu_init.py:90: UserWarning: Transparent hugepages are not enabled. TPU runtime startup and shutdown time should be significantly improved on TPU v5e and newer. If not already set, you may need to enable transparent hugepages in your VM image (sudo sh -c "echo always > /sys/kernel/mm/transparent_hugepage/enabled")
+  warnings.warn(
+Successfully renamed PrivateUse1 backend to 'tpu'. Device: device(type='tpu')
+Registered Python module for 'tpu'.
+Device type: tpu, Device index: default
+Initializing TPU distributed runtime
+/usr/lib/python3.13/multiprocessing/popen_fork.py:73: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = os.fork()
+https://symbolize.stripped_domain/r/?trace=7aa7a5f4ee51,7aa7a5efb32f,7aa7a5f5b097,7aa71feb8c94,59bc85,56d792,440109,5c6e43,5c6cf8,444c20,5a2fbd,56b6fc,447492,64d469,689cd1,686f3d,68389a,682d63,682b54,6812eb,63c6bc,7aa7a5ee01c9,7aa7a5ee028a,63bb54&map= 
+*** SIGTERM received by PID 4341 (TID 4341) on cpu 2, si_code=0, from PID 3376; stack trace: ***
+PC: @     0x7aa7a5f4ee51  (unknown)  (unknown)
+    @     0x7aa71e300137       1888  FailureSignalHandler()
+    @     0x7aa7a5efb330  (unknown)  (unknown)
+    @     0x7aa7a5f5b098         96  (unknown)
+    @     0x7aa71feb8c95        112  (unknown)
+    @           0x59bc86         64  (unknown)
+    @           0x56d793         32  PyObject_Vectorcall
+    @           0x44010a        432  (unknown)
+    @           0x5c6e44        160  (unknown)
+    @           0x5c6cf9         32  PyObject_CallNoArgs
+    @           0x444c21        432  (unknown)
+    @           0x5a2fbe        176  (unknown)
+    @           0x56b6fd         80  _PyObject_MakeTpCall
+    @           0x447493        432  (unknown)
+    @           0x64d46a        112  PyEval_EvalCode
+    @           0x689cd2         48  (unknown)
+    @           0x686f3e        112  (unknown)
+    @           0x68389b         96  (unknown)
+    @           0x682d64        128  (unknown)
+    @           0x682b55         64  (unknown)
+    @           0x6812ec        288  Py_RunMain
+    @           0x63c6bd         48  Py_BytesMain
+    @     0x7aa7a5ee01ca        160  (unknown)
+    @     0x7aa7a5ee028b         96  __libc_start_main
+    @           0x63bb55  (unknown)  _start
+https://symbolize.stripped_domain/r/?trace=7aa7a5f4ee51,7aa71e300136,7aa7a5efb32f,7aa7a5f5b097,7aa71feb8c94,59bc85,56d792,440109,5c6e43,5c6cf8,444c20,5a2fbd,56b6fc,447492,64d469,689cd1,686f3d,68389a,682d63,682b54,6812eb,63c6bc,7aa7a5ee01c9,7aa7a5ee028a,63bb54&map= 
+E1028 07:04:11.922921    4341 coredump_hook.cc:250] RAW: Remote crash gathering disabled for SIGTERM.
+E1028 07:04:11.941346    4341 process_state.cc:794] RAW: Raising signal 15 with default behavior
+AGC_JSON_BEGIN
+{
+  "bench": {
+    "cpu_gemm": {
+      "fp64_gemm_2048_1thread_GFLOPs": 50.6,
+      "fp64_gemm_4096_allthreads_GFLOPs": 613.8,
+      "threads_used_for_all": 44
+    },
+    "cpu_scaling": {
+      "baseline_1worker_s": 0.88,
+      "logical_cpus": 44,
+      "mp_pool_spawn_s": 1.85,
+      "peak_at_workers": 44,
+      "peak_speedup": 23.15,
+      "points": {
+        "1": {
+          "efficiency_pct": 82.0,
+          "speedup_vs_1": 0.82,
+          "wall_s": 1.07
+        },
+        "2": {
+          "efficiency_pct": 100.8,
+          "speedup_vs_1": 2.02,
+          "wall_s": 0.87
+        },
+        "4": {
+          "efficiency_pct": 91.0,
+          "speedup_vs_1": 3.64,
+          "wall_s": 0.96
+        },
+        "8": {
+          "efficiency_pct": 79.3,
+          "speedup_vs_1": 6.35,
+          "wall_s": 1.1
+        },
+        "12": {
+          "efficiency_pct": 82.0,
+          "speedup_vs_1": 9.85,
+          "wall_s": 1.07
+        },
+        "22": {
+          "efficiency_pct": 73.9,
+          "speedup_vs_1": 16.26,
+          "wall_s": 1.19
+        },
+        "44": {
+          "efficiency_pct": 52.6,
+          "speedup_vs_1": 23.15,
+          "wall_s": 1.67
+        },
+        "66": {
+          "efficiency_pct": 33.0,
+          "speedup_vs_1": 21.81,
+          "wall_s": 2.65
+        },
+        "88": {
+          "efficiency_pct": 24.7,
+          "speedup_vs_1": 21.74,
+          "wall_s": 3.55
+        }
+      },
+      "task_iters": 12000000
+    },
+    "disk": {
+      "read_1GiB": "1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.0598716 s, 17.9 GB/s",
+      "write_1GiB": "1073741824 bytes (1.1 GB, 1.0 GiB) copied, 2.56246 s, 419 MB/s"
+    },
+    "gpu": null,
+    "tpu": {
+      "bf16_matmul_8192_TFLOPs": 724.66
+    }
+  },
+  "cgroup_limits": {
+    "cpu_max": "max 100000",
+    "memory_high": "max",
+    "memory_max": "max",
+    "pids_max": "212441"
+  },
+  "cpu": {
+    "affinity_cpus": 44,
+    "isa": {
+      "amx_bf16": false,
+      "amx_int8": false,
+      "avx2": true,
+      "avx512bf16": false,
+      "avx512f": true
+    },
+    "logical_cpus": 44,
+    "model": "AMD EPYC 9B14",
+    "physical_cores": 22,
+    "smt_ratio": 2.0,
+    "sockets": 1
+  },
+  "disk": {
+    "/": {
+      "free_GiB": 205.0,
+      "total_GiB": 225.3
+    },
+    "/content": {
+      "free_GiB": 205.0,
+      "total_GiB": 225.3
+    },
+    "/dev/shm": {
+      "free_GiB": 84.9,
+      "total_GiB": 84.9
+    },
+    "/tmp": {
+      "free_GiB": 205.0,
+      "total_GiB": 225.3
+    }
+  },
+  "env_of_interest": {
+    "COLAB_BACKEND_VERSION": "next",
+    "COLAB_ENABLE_SSH": "1",
+    "COLAB_FILE_HANDLER_ADDR": "localhost:3453",
+    "COLAB_GPU": "",
+    "COLAB_IMAGE_TYPE": "tpu",
+    "COLAB_JUPYTER_IP": "172.28.0.12",
+    "COLAB_JUPYTER_TOKEN": "<redacted>",
+    "COLAB_JUPYTER_TRANSPORT": "ipc",
+    "COLAB_KERNEL_MANAGER_PROXY_HOST": "172.28.0.12",
+    "COLAB_KERNEL_MANAGER_PROXY_PORT": "6000",
+    "COLAB_LANGUAGE_SERVER_PROXY": "/usr/colab/bin/language_service",
+    "COLAB_RELEASE_TAG": "release-colab-external-images_20261026-145216_RC00",
+    "COLAB_WARMUP_DEFAULTS": "1",
+    "TPU_ACCELERATOR_TYPE": "v6e-1",
+    "TPU_CHIPS_PER_HOST_BOUNDS": "2,2,1",
+    "TPU_HOST_BOUNDS": "1,1,1",
+    "TPU_LIBRARY_PATH": "/usr/local/lib/python3.13/dist-packages/libtpu/libtpu.so",
+    "TPU_ML_PLATFORM": "JAX",
+    "TPU_ML_PLATFORM_VERSION": "0.11.2",
+    "TPU_RUNTIME_METRICS_PORTS": "8431,8432,8433,8434",
+    "TPU_SKIP_MDS_QUERY": "1",
+    "TPU_WORKER_HOSTNAMES": "localhost",
+    "TPU_WORKER_ID": "0"
+  },
+  "gpu": null,
+  "hostname": "ec9b9e2c1e07",
+  "kernel": "6.6.159+",
+  "memory": {
+    "MemAvailable_GiB": 170.18,
+    "MemTotal_GiB": 172.95,
+    "SwapTotal_GiB": 0.0
+  },
+  "os": "Ubuntu 24.04.5 LTS",
+  "packages": {
+    "_total_packages": 222,
+    "flax": "0.11.2",
+    "jax": "0.11.2",
+    "jaxlib": "0.11.2",
+    "libtpu": "0.0.50",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3"
+  },
+  "probe_version": 3,
+  "probed_at_utc": "2026-10-28T07:03:31Z",
+  "python": "3.13.18",
+  "requested_accelerator": "v6e1",
+  "torch": {
+    "cuda_available": false,
+    "cuda_version": null,
+    "version": "2.14.1+cpu"
+  },
+  "tpu": {
+    "accel_devices": "none",
+    "device_count": 1,
+    "device_kinds": [
+      "TPU v6 lite"
+    ],
+    "jax_version": "0.11.2",
+    "platform": "tpu"
+  },
+  "uptime_s": 880.26
+}
+AGC_JSON_END

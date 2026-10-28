@@ -1,0 +1,13 @@
+{
+  "label": "a100-highmem",
+  "new_flags": "--gpu A100 --high-mem",
+  "alloc_seconds": 57,
+  "alloc_rc": 0,
+  "session_line": "[agc-a100-highmem-208423] gpu-a100-hm-ass1c0-1eswm92rzc6ey | Hardware: A100 | Shape: High-RAM | Variant: GPU",
+  "cu_per_hour": 6.77,
+  "balance_at_start": 84.62,
+  "balance_after_work": 84.07,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.62 compute units Usage rate: 6.77/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.07 compute units Usage rate: 6.77/hr Active assignments: 1"
+}

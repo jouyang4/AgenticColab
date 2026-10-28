@@ -1,0 +1,835 @@
+{
+ "measured": {
+  "cli": "0.7.5",
+  "account": "single paid Colab account"
+ },
+ "shapes": {
+  "cpu": {
+   "flags": "(none)",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 0.08,
+   "alloc_seconds": 4,
+   "vcpu": 2,
+   "physical_cores": 1,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "ram_gib": 12.67,
+   "accelerator": null,
+   "vram": null,
+   "compute_cap": null,
+   "sms": null,
+   "python": "3.13.18",
+   "torch": "2.11.0+cpu",
+   "cuda": null,
+   "jax": "0.11.1",
+   "driver": null,
+   "disk_content_gib": 225.8,
+   "shm_gib": 5.7,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": null,
+    "tf32_tflops": null,
+    "fp16_tflops": null,
+    "bf16_tflops": null,
+    "hbm_gbps": null,
+    "h2d_pinned_gbps": null,
+    "h2d_pageable_gbps": null,
+    "gemm_1thread_gflops": 34.6,
+    "gemm_all_gflops": 29.5,
+    "disk_write": "75.9 MB/s",
+    "disk_read_cache_warm": "6.0 GB/s"
+   }
+  },
+  "cpu-highmem": {
+   "flags": "--high-mem",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 0.26,
+   "alloc_seconds": 4,
+   "vcpu": 8,
+   "physical_cores": 4,
+   "smt_ratio": 2.0,
+   "cpu_model": "AMD EPYC 7B12",
+   "ram_gib": 50.99,
+   "accelerator": null,
+   "vram": null,
+   "compute_cap": null,
+   "sms": null,
+   "python": "3.13.18",
+   "torch": "2.11.0+cpu",
+   "cuda": null,
+   "jax": "0.11.1",
+   "driver": null,
+   "disk_content_gib": 225.8,
+   "shm_gib": 24.6,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": null,
+    "tf32_tflops": null,
+    "fp16_tflops": null,
+    "bf16_tflops": null,
+    "hbm_gbps": null,
+    "h2d_pinned_gbps": null,
+    "h2d_pageable_gbps": null,
+    "gemm_1thread_gflops": 40.8,
+    "gemm_all_gflops": 165.2,
+    "disk_write": "358 MB/s",
+    "disk_read_cache_warm": "12.7 GB/s"
+   },
+   "cpu_scaling": {
+    "peak_speedup": 3.6,
+    "peak_at_workers": 12,
+    "knee_85pct_at_workers": 2,
+    "pool_spawn_s": 0.023,
+    "points": {
+     "1": {
+      "wall_s": 9.85,
+      "walls_s": [
+       9.85,
+       14.87
+      ],
+      "speedup_vs_1": 1.05,
+      "efficiency_pct": 104.6
+     },
+     "2": {
+      "wall_s": 10.22,
+      "walls_s": [
+       10.22,
+       11.08
+      ],
+      "speedup_vs_1": 2.02,
+      "efficiency_pct": 100.9
+     },
+     "4": {
+      "wall_s": 12.16,
+      "walls_s": [
+       13.02,
+       12.16
+      ],
+      "speedup_vs_1": 3.39,
+      "efficiency_pct": 84.8
+     },
+     "8": {
+      "wall_s": 23.25,
+      "walls_s": [
+       23.37,
+       23.25
+      ],
+      "speedup_vs_1": 3.55,
+      "efficiency_pct": 44.3
+     },
+     "12": {
+      "wall_s": 34.31,
+      "walls_s": [
+       34.77,
+       34.31
+      ],
+      "speedup_vs_1": 3.6,
+      "efficiency_pct": 30.0
+     },
+     "16": {
+      "wall_s": 46.82,
+      "walls_s": [
+       47.57,
+       46.82
+      ],
+      "speedup_vs_1": 3.52,
+      "efficiency_pct": 22.0
+     }
+    }
+   }
+  },
+  "t4": {
+   "flags": "--gpu T4",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 1.07,
+   "alloc_seconds": 3,
+   "vcpu": 2,
+   "physical_cores": 1,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "ram_gib": 12.67,
+   "accelerator": "Tesla T4",
+   "vram": "15.0 GiB",
+   "compute_cap": "7.5",
+   "sms": 40,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 5.6,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 3.74,
+    "tf32_tflops": 3.7,
+    "fp16_tflops": 22.25,
+    "bf16_tflops": 2.14,
+    "hbm_gbps": 225.0,
+    "h2d_pinned_gbps": 12.3,
+    "h2d_pageable_gbps": 6.7,
+    "gemm_1thread_gflops": 55.3,
+    "gemm_all_gflops": 50.0,
+    "disk_write": "130 MB/s",
+    "disk_read_cache_warm": "7.0 GB/s"
+   }
+  },
+  "t4-highmem": {
+   "flags": "--gpu T4 --high-mem",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 1.27,
+   "alloc_seconds": 4,
+   "vcpu": 8,
+   "physical_cores": 4,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "ram_gib": 50.99,
+   "accelerator": "Tesla T4",
+   "vram": "15.0 GiB",
+   "compute_cap": "7.5",
+   "sms": 40,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 24.6,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 4.16,
+    "tf32_tflops": 4.08,
+    "fp16_tflops": 23.67,
+    "bf16_tflops": 2.44,
+    "hbm_gbps": 219.7,
+    "h2d_pinned_gbps": 12.3,
+    "h2d_pageable_gbps": 6.7,
+    "gemm_1thread_gflops": 53.1,
+    "gemm_all_gflops": 140.8,
+    "disk_write": "349 MB/s",
+    "disk_read_cache_warm": "6.8 GB/s"
+   }
+  },
+  "l4": {
+   "flags": "--gpu L4",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 1.54,
+   "alloc_seconds": 3,
+   "vcpu": 12,
+   "physical_cores": 6,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "ram_gib": 52.96,
+   "accelerator": "NVIDIA L4",
+   "vram": "22.5 GiB",
+   "compute_cap": "8.9",
+   "sms": 58,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 25.5,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 10.57,
+    "tf32_tflops": 25.34,
+    "fp16_tflops": 53.82,
+    "bf16_tflops": 57.96,
+    "hbm_gbps": 220.7,
+    "h2d_pinned_gbps": 12.3,
+    "h2d_pageable_gbps": 6.8,
+    "gemm_1thread_gflops": 60.9,
+    "gemm_all_gflops": 301.4,
+    "disk_write": "333 MB/s",
+    "disk_read_cache_warm": "7.6 GB/s"
+   },
+   "cpu_scaling": {
+    "peak_speedup": 5.53,
+    "peak_at_workers": 6,
+    "knee_85pct_at_workers": 6,
+    "pool_spawn_s": 0.03,
+    "points": {
+     "1": {
+      "wall_s": 9.38,
+      "walls_s": [
+       10.88,
+       9.38
+      ],
+      "speedup_vs_1": 0.97,
+      "efficiency_pct": 97.2
+     },
+     "2": {
+      "wall_s": 9.88,
+      "walls_s": [
+       9.88,
+       10.21
+      ],
+      "speedup_vs_1": 1.85,
+      "efficiency_pct": 92.3
+     },
+     "3": {
+      "wall_s": 9.76,
+      "walls_s": [
+       9.76,
+       10.1
+      ],
+      "speedup_vs_1": 2.8,
+      "efficiency_pct": 93.4
+     },
+     "4": {
+      "wall_s": 10.21,
+      "walls_s": [
+       10.65,
+       10.21
+      ],
+      "speedup_vs_1": 3.57,
+      "efficiency_pct": 89.3
+     },
+     "6": {
+      "wall_s": 9.9,
+      "walls_s": [
+       9.9,
+       10.25
+      ],
+      "speedup_vs_1": 5.53,
+      "efficiency_pct": 92.1
+     },
+     "8": {
+      "wall_s": 14.64,
+      "walls_s": [
+       15.12,
+       14.64
+      ],
+      "speedup_vs_1": 4.98,
+      "efficiency_pct": 62.3
+     },
+     "12": {
+      "wall_s": 21.25,
+      "walls_s": [
+       21.41,
+       21.25
+      ],
+      "speedup_vs_1": 5.15,
+      "efficiency_pct": 42.9
+     },
+     "18": {
+      "wall_s": 31.72,
+      "walls_s": [
+       31.83,
+       31.72
+      ],
+      "speedup_vs_1": 5.17,
+      "efficiency_pct": 28.7
+     },
+     "24": {
+      "wall_s": 41.5,
+      "walls_s": [
+       41.5,
+       41.88
+      ],
+      "speedup_vs_1": 5.27,
+      "efficiency_pct": 22.0
+     }
+    }
+   }
+  },
+  "a100": {
+   "flags": "--gpu A100",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 5.3,
+   "alloc_seconds": 4,
+   "vcpu": 12,
+   "physical_cores": 6,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "ram_gib": 83.47,
+   "accelerator": "NVIDIA A100-SXM4-40GB",
+   "vram": "40.0 GiB",
+   "compute_cap": "8.0",
+   "sms": 108,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 40.7,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 19.17,
+    "tf32_tflops": 128.1,
+    "fp16_tflops": 264.32,
+    "bf16_tflops": 271.84,
+    "hbm_gbps": 1027.9,
+    "h2d_pinned_gbps": 12.3,
+    "h2d_pageable_gbps": 6.9,
+    "gemm_1thread_gflops": 60.4,
+    "gemm_all_gflops": 304.1,
+    "disk_write": "279 MB/s",
+    "disk_read_cache_warm": "7.0 GB/s"
+   }
+  },
+  "a100-highmem": {
+   "flags": "--gpu A100 --high-mem",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 6.77,
+   "alloc_seconds": 57,
+   "vcpu": 12,
+   "physical_cores": 6,
+   "smt_ratio": 2.0,
+   "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "ram_gib": 167.05,
+   "accelerator": "NVIDIA A100-SXM4-80GB",
+   "vram": "80.0 GiB",
+   "compute_cap": "8.0",
+   "sms": 108,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 82.2,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 19.01,
+    "tf32_tflops": 127.14,
+    "fp16_tflops": 263.82,
+    "bf16_tflops": 273.63,
+    "hbm_gbps": 1203.2,
+    "h2d_pinned_gbps": 12.3,
+    "h2d_pageable_gbps": 6.9,
+    "gemm_1thread_gflops": 60.5,
+    "gemm_all_gflops": 306.4,
+    "disk_write": "270 MB/s",
+    "disk_read_cache_warm": "6.9 GB/s"
+   }
+  },
+  "g4": {
+   "flags": "--gpu G4",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 8.9,
+   "alloc_seconds": 5,
+   "vcpu": 48,
+   "physical_cores": 24,
+   "smt_ratio": 2.0,
+   "cpu_model": "AMD EPYC 9B45",
+   "ram_gib": 176.88,
+   "accelerator": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "vram": "95.6 GiB",
+   "compute_cap": "12.0",
+   "sms": 188,
+   "python": "3.13.16",
+   "torch": "2.11.0+cu130",
+   "cuda": "13.0",
+   "jax": "0.11.1",
+   "driver": "580.82.07",
+   "disk_content_gib": 235.7,
+   "shm_gib": 87.0,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": 76.91,
+    "tf32_tflops": 209.57,
+    "fp16_tflops": 416.94,
+    "bf16_tflops": 427.73,
+    "hbm_gbps": 1027.7,
+    "h2d_pinned_gbps": 56.2,
+    "h2d_pageable_gbps": 52.0,
+    "gemm_1thread_gflops": 105.1,
+    "gemm_all_gflops": 1799.6,
+    "disk_write": "306 MB/s",
+    "disk_read_cache_warm": "28.7 GB/s"
+   },
+   "cpu_scaling": {
+    "peak_speedup": 24.19,
+    "peak_at_workers": 96,
+    "knee_85pct_at_workers": 24,
+    "pool_spawn_s": 0.025,
+    "points": {
+     "1": {
+      "wall_s": 8.39,
+      "walls_s": [
+       8.39,
+       8.54
+      ],
+      "speedup_vs_1": 1.04,
+      "efficiency_pct": 104.4
+     },
+     "2": {
+      "wall_s": 8.59,
+      "walls_s": [
+       9.21,
+       8.59
+      ],
+      "speedup_vs_1": 2.04,
+      "efficiency_pct": 101.9
+     },
+     "4": {
+      "wall_s": 9.22,
+      "walls_s": [
+       9.22,
+       9.48
+      ],
+      "speedup_vs_1": 3.8,
+      "efficiency_pct": 95.0
+     },
+     "8": {
+      "wall_s": 9.44,
+      "walls_s": [
+       9.44,
+       9.81
+      ],
+      "speedup_vs_1": 7.42,
+      "efficiency_pct": 92.7
+     },
+     "12": {
+      "wall_s": 9.04,
+      "walls_s": [
+       9.04,
+       9.08
+      ],
+      "speedup_vs_1": 11.62,
+      "efficiency_pct": 96.9
+     },
+     "24": {
+      "wall_s": 10.01,
+      "walls_s": [
+       10.87,
+       10.01
+      ],
+      "speedup_vs_1": 21.0,
+      "efficiency_pct": 87.5
+     },
+     "48": {
+      "wall_s": 17.47,
+      "walls_s": [
+       18.2,
+       17.47
+      ],
+      "speedup_vs_1": 24.06,
+      "efficiency_pct": 50.1
+     },
+     "72": {
+      "wall_s": 26.11,
+      "walls_s": [
+       26.11,
+       26.54
+      ],
+      "speedup_vs_1": 24.15,
+      "efficiency_pct": 33.5
+     },
+     "96": {
+      "wall_s": 34.76,
+      "walls_s": [
+       34.79,
+       34.76
+      ],
+      "speedup_vs_1": 24.19,
+      "efficiency_pct": 25.2
+     }
+    }
+   }
+  },
+  "v5e1": {
+   "flags": "--tpu v5e1",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 2.92,
+   "alloc_seconds": 4,
+   "vcpu": 24,
+   "physical_cores": 12,
+   "smt_ratio": 2.0,
+   "cpu_model": "AMD EPYC 7B13",
+   "ram_gib": 47.05,
+   "accelerator": "TPU v5 lite",
+   "vram": null,
+   "compute_cap": null,
+   "sms": null,
+   "python": "3.13.18",
+   "torch": "2.14.1+cpu",
+   "cuda": null,
+   "jax": "0.11.2",
+   "driver": null,
+   "disk_content_gib": 225.3,
+   "shm_gib": 22.4,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": null,
+    "tf32_tflops": null,
+    "fp16_tflops": null,
+    "bf16_tflops": 186.37,
+    "hbm_gbps": null,
+    "h2d_pinned_gbps": null,
+    "h2d_pageable_gbps": null,
+    "gemm_1thread_gflops": 42.6,
+    "gemm_all_gflops": 450.5,
+    "disk_write": "118 MB/s",
+    "disk_read_cache_warm": "15.9 GB/s"
+   },
+   "cpu_scaling": {
+    "peak_speedup": 13.01,
+    "peak_at_workers": 24,
+    "knee_85pct_at_workers": 12,
+    "pool_spawn_s": 0.057,
+    "points": {
+     "1": {
+      "wall_s": 10.0,
+      "walls_s": [
+       10.0,
+       10.84
+      ],
+      "speedup_vs_1": 0.99,
+      "efficiency_pct": 99.4
+     },
+     "2": {
+      "wall_s": 10.23,
+      "walls_s": [
+       10.23,
+       10.83
+      ],
+      "speedup_vs_1": 1.94,
+      "efficiency_pct": 97.2
+     },
+     "4": {
+      "wall_s": 11.25,
+      "walls_s": [
+       11.3,
+       11.25
+      ],
+      "speedup_vs_1": 3.53,
+      "efficiency_pct": 88.3
+     },
+     "6": {
+      "wall_s": 10.21,
+      "walls_s": [
+       10.23,
+       10.21
+      ],
+      "speedup_vs_1": 5.84,
+      "efficiency_pct": 97.3
+     },
+     "8": {
+      "wall_s": 10.91,
+      "walls_s": [
+       10.91,
+       11.05
+      ],
+      "speedup_vs_1": 7.29,
+      "efficiency_pct": 91.1
+     },
+     "12": {
+      "wall_s": 10.82,
+      "walls_s": [
+       10.82,
+       11.67
+      ],
+      "speedup_vs_1": 11.02,
+      "efficiency_pct": 91.8
+     },
+     "24": {
+      "wall_s": 18.34,
+      "walls_s": [
+       18.34,
+       18.76
+      ],
+      "speedup_vs_1": 13.01,
+      "efficiency_pct": 54.2
+     },
+     "36": {
+      "wall_s": 27.95,
+      "walls_s": [
+       28.48,
+       27.95
+      ],
+      "speedup_vs_1": 12.8,
+      "efficiency_pct": 35.6
+     },
+     "48": {
+      "wall_s": 36.67,
+      "walls_s": [
+       37.03,
+       36.67
+      ],
+      "speedup_vs_1": 13.01,
+      "efficiency_pct": 27.1
+     }
+    }
+   }
+  },
+  "v6e1": {
+   "flags": "--tpu v6e1",
+   "allocated": true,
+   "outcome": "ok",
+   "cu_per_hour": 4.08,
+   "alloc_seconds": 4,
+   "vcpu": 44,
+   "physical_cores": 22,
+   "smt_ratio": 2.0,
+   "cpu_model": "AMD EPYC 9B14",
+   "ram_gib": 172.95,
+   "accelerator": "TPU v6 lite",
+   "vram": null,
+   "compute_cap": null,
+   "sms": null,
+   "python": "3.13.18",
+   "torch": "2.14.1+cpu",
+   "cuda": null,
+   "jax": "0.11.2",
+   "driver": null,
+   "disk_content_gib": 225.3,
+   "shm_gib": 84.9,
+   "cgroup": {
+    "cpu_max": "max 100000",
+    "memory_max": "max"
+   },
+   "bench": {
+    "fp32_tflops": null,
+    "tf32_tflops": null,
+    "fp16_tflops": null,
+    "bf16_tflops": 724.66,
+    "hbm_gbps": null,
+    "h2d_pinned_gbps": null,
+    "h2d_pageable_gbps": null,
+    "gemm_1thread_gflops": 50.6,
+    "gemm_all_gflops": 613.8,
+    "disk_write": "419 MB/s",
+    "disk_read_cache_warm": "17.9 GB/s"
+   },
+   "cpu_scaling": {
+    "peak_speedup": 23.24,
+    "peak_at_workers": 88,
+    "knee_85pct_at_workers": 11,
+    "pool_spawn_s": 0.032,
+    "points": {
+     "1": {
+      "wall_s": 9.98,
+      "walls_s": [
+       9.98,
+       10.84
+      ],
+      "speedup_vs_1": 1.01,
+      "efficiency_pct": 101.4
+     },
+     "2": {
+      "wall_s": 10.34,
+      "walls_s": [
+       10.34,
+       11.0
+      ],
+      "speedup_vs_1": 1.96,
+      "efficiency_pct": 97.8
+     },
+     "4": {
+      "wall_s": 11.21,
+      "walls_s": [
+       13.87,
+       11.21
+      ],
+      "speedup_vs_1": 3.61,
+      "efficiency_pct": 90.2
+     },
+     "8": {
+      "wall_s": 10.8,
+      "walls_s": [
+       11.13,
+       10.8
+      ],
+      "speedup_vs_1": 7.49,
+      "efficiency_pct": 93.6
+     },
+     "11": {
+      "wall_s": 11.01,
+      "walls_s": [
+       11.98,
+       11.01
+      ],
+      "speedup_vs_1": 10.1,
+      "efficiency_pct": 91.9
+     },
+     "12": {
+      "wall_s": 12.19,
+      "walls_s": [
+       12.19,
+       14.25
+      ],
+      "speedup_vs_1": 9.96,
+      "efficiency_pct": 83.0
+     },
+     "22": {
+      "wall_s": 12.04,
+      "walls_s": [
+       12.2,
+       12.04
+      ],
+      "speedup_vs_1": 18.48,
+      "efficiency_pct": 84.0
+     },
+     "44": {
+      "wall_s": 20.5,
+      "walls_s": [
+       20.6,
+       20.5
+      ],
+      "speedup_vs_1": 21.71,
+      "efficiency_pct": 49.3
+     },
+     "66": {
+      "wall_s": 29.1,
+      "walls_s": [
+       30.48,
+       29.1
+      ],
+      "speedup_vs_1": 22.94,
+      "efficiency_pct": 34.8
+     },
+     "88": {
+      "wall_s": 38.29,
+      "walls_s": [
+       38.38,
+       38.29
+      ],
+      "speedup_vs_1": 23.24,
+      "efficiency_pct": 26.4
+     }
+    }
+   }
+  }
+ }
+}

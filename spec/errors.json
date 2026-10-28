@@ -1,0 +1,43 @@
+{
+  "measured": {"cli": "0.7.5"},
+  "classes": [
+    {"class": "entitlement", "signal": "Backend rejected accelerator 'X'", "latency": "~1-2 s", "retry": "never", "action": "different shape; re-probe occasionally, entitlements change"},
+    {"class": "concurrency", "signal": "TooManyAssignmentsError, HTTP 412", "latency": "fast", "retry": "only after releasing", "action": "orphans count against the limit; release them"},
+    {"class": "capacity", "signal": "HTTP 503", "latency": "slow", "retry": "later", "action": "or fall back to another shape"},
+    {"class": "throttle", "signal": "no quota or entitlement, balance remaining", "latency": "~1-2 s", "retry": "after ~10-26 h", "action": "back off; do NOT buy compute units"},
+    {"class": "control-channel", "signal": "RuntimeError: Connection was lost. / empty poll", "latency": "hangs", "retry": "yes, idempotently", "action": "VM and job unaffected; never stop"}
+  ],
+  "errors": [
+    {"symptom": "Backend rejected accelerator 'X'. You may not have quota or entitlement...", "means": "entitlement: your account/tier cannot have this shape at all. Returns in ~1-2 s.", "do": "Use a different shape. Retrying never helps. Re-probe occasionally."},
+    {"symptom": "TooManyAssignmentsError: Precondition Failed (HTTP 412)", "means": "concurrency: you already hold the maximum assignments, often including forgotten orphans.", "do": "List assignments; release orphans (03 §7). Do not hammer `colab new`.", "ref": "03-session-lifecycle.md"},
+    {"symptom": "HTTP 503 Service Unavailable from `colab new`", "means": "capacity: the shape exists for you, none free now.", "do": "Retry later or fall back. Not a quota problem."},
+    {"symptom": "ReadTimeout: ... read timeout=120 on `colab new`", "means": "client gave up; the backend may have continued.", "do": "Re-list before retrying. A VM may exist as an unnamed orphan holding a slot."},
+    {"symptom": "no quota or entitlement for a shape that worked an hour ago, balance remaining", "means": "usage throttle after sustained heavy use of one class.", "do": "Back off. Clears in ~10-26 h with no purchase."},
+    {"symptom": "RuntimeError: Connection was lost. (jupyter_kernel_client/wsclient.py)", "means": "control-channel drop. VM and job unaffected.", "do": "Retry the call. Never stop the session.", "ref": "04-supervisor-patterns.md"},
+    {"symptom": "`exec` hangs far past its --timeout", "means": "same; --timeout does not bound socket loss.", "do": "Only an external coreutils `timeout` saves you."},
+    {"symptom": "the FIRST `exec` on a brand-new session hangs", "means": "the command has usually already run; the reply was lost.", "do": "Idempotent launch (PID file + result check), then retry. Burn a cheap warm-up exec after allocation."},
+    {"symptom": "TimeoutError: Timeout waiting for reply", "means": "the CLI's own --timeout fired waiting on the kernel reply. It does NOT mean the code did not run.", "do": "Retry idempotently and check state. Unlike a socket loss this returns control, but it says nothing about whether the work started."},
+    {"symptom": "a timed-out `exec`", "means": "the command may already have run; only the reply was lost.", "do": "Check state before retrying. No reply is not no effect."},
+    {"symptom": "Session 'X' appears to be lost (404/401). Cleaning up.", "means": "<=0.6.0: an expired proxy token; the CLI discards a handle to a live VM.", "do": "Upgrade to >=0.7.x. Meanwhile re-adopt the assignment (03 §6).", "ref": "03-session-lifecycle.md"},
+    {"symptom": "Session 'X' not found for a session visible in `colab sessions`", "means": "an endpoint id passed where a local label was required; or wrong HOME/--config store; or one malformed row made the store fail closed.", "do": "Check the store loaded, then the label, then validate the JSON."},
+    {"symptom": "Pruned N stale local session(s).", "means": "`colab sessions` deleted local rows the calling account cannot see.", "do": "With multiple accounts you just orphaned the other one's VMs. Use isolated homes.", "ref": "08-multi-account.md"},
+    {"symptom": "every session reports 'not found', including healthy ones", "means": "sessions.json failed closed -- one bad row poisons the store.", "do": "Restore a backup or remove the bad row; validate with SessionState(**row) before writing."},
+    {"symptom": "SSLEOFError: EOF occurred in violation of protocol during `upload`", "means": "large-transfer failure through the runtime proxy.", "do": "Chunk it (16 MB).", "ref": "06-data-transfer.md"},
+    {"symptom": "`colab update` says you are current but --high-mem is unknown", "means": "you are on 0.6.0 from a different install path than the one checked.", "do": "`colab version`; install >=0.7.x."},
+    {"symptom": "exec: Got unexpected extra argument(s) (print(...))", "means": "code passed positionally. Never supported.", "do": "Use -f FILE or stdin."},
+    {"symptom": "colab: command not found in a non-login shell", "means": "the CLI lives in ~/.local/bin, not on a bare PATH.", "do": "`bash -lc`, or export PATH explicitly."},
+    {"symptom": "'Credentials' object has no attribute 'request'", "means": "you constructed the API client from raw ADC credentials.", "do": "Go through state.client."},
+    {"symptom": "pydantic validation error writing a rebuilt session row", "means": "you copied variant/accelerator/machine_shape enums into str fields.", "do": "Write the enum NAME (`.name`), not `.value`."},
+    {"symptom": "exit code 15 and no output from a restart script", "means": "`pkill -f` matched the caller's own cmdline.", "do": "Script files + bracketed patterns.", "ref": "04-supervisor-patterns.md"},
+    {"symptom": "gcloud auth list -> 'No credentialed accounts'", "means": "ADC files are not gcloud logins.", "do": "Not an error. Does not mean no account is configured."}
+  ],
+  "allocation_triage": {
+    "lang": "bash",
+    "code": "colab new -s probe --gpu X\n\n# Backend rejected accelerator 'X' ...  -> ENTITLEMENT. ~1-2 s. Never retry; pick another shape.\n# HTTP 503 Service Unavailable          -> CAPACITY. Retry later, or fall back to another shape.\n# TooManyAssignmentsError: 412          -> CONCURRENCY. Check for orphans first.\n\ncolab usage                             # authoritative, side-effect-free: 'Active assignments: N'"
+  },
+  "rules": [
+    "Entitlement rejections come back fast (~1-2 s): the backend answers from policy, not placement. A slow failure is capacity or network.",
+    "A 412 with no known sessions means orphaned assignments hold the slots. `colab usage` is the authoritative count.",
+    "A detached job keeps running on a VM that cannot currently be addressed. Probe before rebuilding: re-bootstrapping elsewhere while the original finishes and is reclaimed loses the results."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "label": "t4-highmem",
+  "new_flags": "--gpu T4 --high-mem",
+  "alloc_seconds": 4,
+  "alloc_rc": 0,
+  "session_line": "[agc-t4-highmem-207393] gpu-t4-hm-use1c0-3sz8eksgb20u3 | Hardware: T4 | Shape: High-RAM | Variant: GPU",
+  "cu_per_hour": 1.27,
+  "balance_at_start": 84.78,
+  "balance_after_work": 84.78,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.78 compute units Usage rate: 1.27/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.78 compute units Usage rate: 1.27/hr Active assignments: 1"
+}

@@ -1,0 +1,17 @@
+{
+  "label": "g4",
+  "new_flags": "--gpu G4",
+  "outcome": "ok",
+  "alloc_seconds": 5,
+  "alloc_rc": 0,
+  "session_line": "[probe-g4-225264] gpu-g4-s-euw4a0-10tbmdv7h5yci | Hardware: G4 | Shape: Standard | Variant: GPU",
+  "cu_per_hour": 8.9,
+  "cu_rate_clean": true,
+  "balance_at_start": 82.39,
+  "balance_after": 82.39,
+  "active_assignments_before": 0.0,
+  "active_assignments_while_live": 1.0,
+  "usage_raw_before": "Current balance: 82.39 compute units Usage rate: 0.00/hr Active assignments: 0",
+  "usage_raw_live": "Current balance: 82.39 compute units Usage rate: 8.90/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 82.39 compute units Usage rate: 8.90/hr Active assignments: 1"
+}

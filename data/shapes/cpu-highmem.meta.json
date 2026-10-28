@@ -1,0 +1,17 @@
+{
+  "label": "cpu-highmem",
+  "new_flags": "--high-mem",
+  "outcome": "ok",
+  "alloc_seconds": 4,
+  "alloc_rc": 0,
+  "session_line": "[probe-cpu-highmem-225431] m-hm-use1d0-gz62478dso0h | Hardware: CPU | Shape: High-RAM | Variant: DEFAULT",
+  "cu_per_hour": 0.26,
+  "cu_rate_clean": true,
+  "balance_at_start": 82.39,
+  "balance_after": 82.39,
+  "active_assignments_before": 0.0,
+  "active_assignments_while_live": 1.0,
+  "usage_raw_before": "Current balance: 82.39 compute units Usage rate: 0.00/hr Active assignments: 0",
+  "usage_raw_live": "Current balance: 82.39 compute units Usage rate: 0.26/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 82.39 compute units Usage rate: 0.26/hr Active assignments: 1"
+}

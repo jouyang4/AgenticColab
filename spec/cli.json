@@ -1,0 +1,107 @@
+{
+  "measured": {"cli": "0.7.5", "compared_against": "0.6.0", "auth": "oauth2"},
+  "install": [
+    "pip install 'google-colab-cli>=0.7.5'",
+    "uv tool install google-colab-cli"
+  ],
+  "facts": [
+    "`colab --version` does not exist; use `colab version`.",
+    "Global flags precede the subcommand. `colab --auth=adc sessions` works; `colab sessions --auth=adc` -> `No such option: --auth`.",
+    "`--auth` selects a credential MECHANISM, not an account. Identity comes from `CLOUDSDK_CONFIG`.",
+    "No `colab whoami`. ADC files often carry an empty `account` field; identity is not readable after the fact.",
+    "`exec` never takes code positionally, in any version. stdin or `-f`.",
+    "`--timeout` bounds code execution only, not a lost websocket. Wrap every call in coreutils `timeout`.",
+    "Builds share `sessions.json`; a session created by one build is usable by another.",
+    "The binary installs to `~/.local/bin`, which is absent from a non-login shell PATH."
+  ],
+  "global_flags": [
+    {"flag": "--auth <oauth2|adc>", "meaning": "credential strategy. oauth2 (default) = CLI's own installed-app flow + token.json; adc = Application Default Credentials."},
+    {"flag": "--config <path>", "meaning": "session-state file. Default `~/.config/colab-cli/sessions.json`."},
+    {"flag": "-c, --client-oauth-config <path>", "meaning": "client OAuth config JSON."},
+    {"flag": "--logtostderr", "meaning": "CLI chatter to stderr; stdout stays pipeable."}
+  ],
+  "commands": {
+    "session lifecycle": [
+      {"cmd": "colab new", "note": "allocate. Flags below."},
+      {"cmd": "colab sessions", "note": "list server-side assignments AND reconcile the local store: prunes local rows the calling account cannot see, refreshes proxy tokens. Bare only -- `colab sessions list` is an error."},
+      {"cmd": "colab status -s NAME", "note": "one session's state. `-s` takes the local label, never an endpoint id."},
+      {"cmd": "colab stop -s NAME", "note": "release. Resolves local labels only."},
+      {"cmd": "colab restart-kernel -s NAME", "note": "restart kernel, keep VM."},
+      {"cmd": "colab url -s NAME [--open]", "note": "browser URL attaching the Colab frontend to your existing VM. Pipeable."},
+      {"cmd": "colab usage", "note": "0.7.x only. CU balance, burn rate, active assignment count. No side effects on the local store."}
+    ],
+    "execution": [
+      {"cmd": "colab exec -s NAME", "note": "run code in the session kernel. Code via stdin or -f only."},
+      {"cmd": "colab repl -s NAME", "note": "interactive REPL."},
+      {"cmd": "colab console -s NAME", "note": "raw TTY console."},
+      {"cmd": "colab ssh", "note": "0.7.x only. SSH into the runtime, incl. an OpenSSH ProxyCommand bridge."},
+      {"cmd": "colab run script.py", "note": "allocate a fresh VM, run a local script, release. Works as a shebang interpreter."}
+    ],
+    "files": [
+      {"cmd": "colab upload LOCAL REMOTE -s NAME", "note": "one file. Large uploads fail intermittently -- chunk them."},
+      {"cmd": "colab download REMOTE LOCAL -s NAME", "note": "one file."},
+      {"cmd": "colab ls [path] -s NAME", "note": "default path `content`."},
+      {"cmd": "colab rm PATH -s NAME", "note": "remove a remote file."},
+      {"cmd": "colab edit PATH -s NAME", "note": "open a remote file in $EDITOR."},
+      {"cmd": "colab install PKG... -s NAME", "note": "pip install on the VM. `-r requirements.txt` works."},
+      {"cmd": "colab drivemount [path] -s NAME", "note": "mount Drive, default `/content/drive`."}
+    ],
+    "meta": [
+      {"cmd": "colab log [-s NAME] [-n N] [-t TYPE] [-o OUT]", "note": "session history. `--output` infers format from suffix: .ipynb, .md, .txt, .jsonl. Agent audit trail."},
+      {"cmd": "colab auth", "note": "0.6.0: authenticate."},
+      {"cmd": "colab skill", "note": "print bundled SKILL.md (COLAB_SKILL.md on 0.6.0)."},
+      {"cmd": "colab readme", "note": "print bundled README.md."},
+      {"cmd": "colab update [--install]", "note": "check PyPI; --install upgrades in place (Linux only)."},
+      {"cmd": "colab pay", "note": "open the compute-units page."},
+      {"cmd": "colab version", "note": "version."}
+    ]
+  },
+  "new_flags": [
+    {"flag": "-s, --session <name>", "values": "local label; generated if omitted"},
+    {"flag": "--gpu <T4|L4|G4|A100|H100>", "values": "GPU shape"},
+    {"flag": "--tpu <v5e1|v6e1>", "values": "TPU shape"},
+    {"flag": "--high-mem", "values": "high-RAM shape. Honoured for CPU/T4/A100; ignored for L4 and both TPUs (single shape each). 0.7.x only."},
+    {"flag": "(neither --gpu nor --tpu)", "values": "CPU runtime"}
+  ],
+  "exec_flags": [
+    {"flag": "-f, --file <path>", "note": "execute a local file"},
+    {"flag": "--timeout <float>", "note": "code-execution timeout, default 30 s. Does not bound a lost websocket."},
+    {"flag": "--env KEY=VALUE", "note": "0.7.x only. Env var in the remote kernel. Repeatable."},
+    {"flag": "--output-image <path>", "note": "save a plot"}
+  ],
+  "run_flags": "--gpu/--tpu/--high-mem, -s, --keep, --timeout, --env; script_args after the path arrive as sys.argv[1:]",
+  "enums": {
+    "Accelerator": ["NONE", "G4", "T4", "L4", "A100", "H100", "V5E1", "V6E1"],
+    "Shape": ["STANDARD", "HIGH_RAM"],
+    "Variant": ["DEFAULT", "GPU", "TPU"]
+  },
+  "version_diff": [
+    {"feature": "--high-mem", "v060": false, "v075": true},
+    {"feature": "colab usage (CU balance/rate)", "v060": false, "v075": true},
+    {"feature": "colab ssh", "v060": false, "v075": true},
+    {"feature": "exec --env", "v060": false, "v075": true},
+    {"feature": "exec positional code", "v060": false, "v075": false},
+    {"feature": "proxy-token auto-refresh", "v060": false, "v075": true, "note": "0.6.0 handles die ~1 h; 0.7.x refreshes with a 5-min margin"},
+    {"feature": "SessionState.token_expires_at", "v060": false, "v075": true},
+    {"feature": "SessionState.machine_shape", "v060": false, "v075": true},
+    {"feature": "bundled skill file", "v060": "COLAB_SKILL.md", "v075": "SKILL.md"}
+  ],
+  "internals": {
+    "import": "from colab_cli.common import state, AuthProvider, SessionState",
+    "objects": [
+      {"name": "state.client", "note": "authorized client. Methods: assign, unassign(endpoint), list_assignments(), get_consumption_user_info(). Constructing it yourself from raw ADC credentials fails with `'Credentials' object has no attribute 'request'`."},
+      {"name": "ListedAssignment", "note": "endpoint, accelerator, variant, machine_shape, runtime_proxy_info (token, url, tokenExpiresInSeconds). list_assignments() mints a fresh proxy token per call."},
+      {"name": "SessionState", "note": "one row of sessions.json. Required: name, token, url, endpoint. Optional: token_expires_at, variant, accelerator, machine_shape, kernel_id, session_id, last_execution, running."},
+      {"name": "state.store (StateStore)", "note": "add, get, list, remove."}
+    ],
+    "trap": "accelerator/variant/machine_shape are ENUMS on an assignment and `str` on SessionState. pydantic v2 will not coerce them; a refused row makes the whole store fail closed. Write enum NAMES (`.name`), not values."
+  },
+  "examples": [
+    {"title": "install and check", "lang": "bash", "code": "pip install 'google-colab-cli>=0.7.5'\ncolab version"},
+    {"title": "account selection", "lang": "bash", "code": "CLOUDSDK_CONFIG=~/.config/gcloud-A colab --auth=adc sessions   # account A\nCLOUDSDK_CONFIG=~/.config/gcloud-B colab --auth=adc sessions   # account B"},
+    {"title": "exec: stdin or -f, never positional", "lang": "bash", "code": "colab exec -s s1 'print(1+1)'          # Error: Got unexpected extra argument(s)\necho 'print(6*7)' | colab exec -s s1    # ok\ncolab exec -s s1 -f ./job.py           # ok"},
+    {"title": "colab run as a shebang interpreter", "lang": "python", "code": "#!/usr/bin/env -S colab run --gpu T4\nimport torch\nprint(torch.cuda.get_device_name(0))"},
+    {"title": "two builds side by side", "lang": "bash", "code": "uv venv --python 3.12 ~/colab-075\nuv pip install --python ~/colab-075/bin/python 'google-colab-cli==0.7.5'\n~/colab-075/bin/colab version   # leaves a shared `uv tool` install untouched"},
+    {"title": "enumerate assignments", "lang": "python", "code": "from colab_cli.common import state, AuthProvider\nstate.auth_provider = AuthProvider.OAUTH2\nfor a in state.client.list_assignments():\n    print(a.endpoint, a.accelerator, a.machine_shape, a.runtime_proxy_info.token[:12])"}
+  ]
+}

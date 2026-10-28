@@ -1,0 +1,69 @@
+{
+  "logical_cpus": 8,
+  "task_iters": 58205982,
+  "calibrated_single_task_s": 11.24,
+  "baseline_1worker_s": 10.31,
+  "trials_per_point": 2,
+  "points": {
+    "1": {
+      "wall_s": 9.85,
+      "walls_s": [
+        9.85,
+        14.87
+      ],
+      "speedup_vs_1": 1.05,
+      "efficiency_pct": 104.6
+    },
+    "2": {
+      "wall_s": 10.22,
+      "walls_s": [
+        10.22,
+        11.08
+      ],
+      "speedup_vs_1": 2.02,
+      "efficiency_pct": 100.9
+    },
+    "4": {
+      "wall_s": 12.16,
+      "walls_s": [
+        13.02,
+        12.16
+      ],
+      "speedup_vs_1": 3.39,
+      "efficiency_pct": 84.8
+    },
+    "8": {
+      "wall_s": 23.25,
+      "walls_s": [
+        23.37,
+        23.25
+      ],
+      "speedup_vs_1": 3.55,
+      "efficiency_pct": 44.3
+    },
+    "12": {
+      "wall_s": 34.31,
+      "walls_s": [
+        34.77,
+        34.31
+      ],
+      "speedup_vs_1": 3.6,
+      "efficiency_pct": 30.0
+    },
+    "16": {
+      "wall_s": 46.82,
+      "walls_s": [
+        47.57,
+        46.82
+      ],
+      "speedup_vs_1": 3.52,
+      "efficiency_pct": 22.0
+    }
+  },
+  "peak_speedup": 3.6,
+  "peak_at_workers": 12,
+  "knee_85pct_efficiency_at_workers": 2,
+  "mp_pool_spawn_s": 0.023,
+  "accel_label": "cpu-highmem",
+  "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz"
+}

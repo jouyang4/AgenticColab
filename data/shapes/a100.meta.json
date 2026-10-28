@@ -1,0 +1,13 @@
+{
+  "label": "a100",
+  "new_flags": "--gpu A100",
+  "alloc_seconds": 4,
+  "alloc_rc": 0,
+  "session_line": "[agc-a100-208238] gpu-a100-s-ass1b0-1u5tznfzol3t3 | Hardware: A100 | Shape: Standard | Variant: GPU",
+  "cu_per_hour": 5.3,
+  "balance_at_start": 84.62,
+  "balance_after_work": 84.62,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.62 compute units Usage rate: 5.30/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.62 compute units Usage rate: 5.30/hr Active assignments: 1"
+}

@@ -1,0 +1,138 @@
+AGC_JSON_BEGIN
+{
+  "bench": {
+    "cpu_gemm": {
+      "fp64_gemm_2048_1thread_GFLOPs": 53.1,
+      "fp64_gemm_4096_allthreads_GFLOPs": 140.8,
+      "threads_used_for_all": 8
+    },
+    "disk": {
+      "read_1GiB": "1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.15696 s, 6.8 GB/s",
+      "write_1GiB": "1073741824 bytes (1.1 GB, 1.0 GiB) copied, 3.08081 s, 349 MB/s"
+    },
+    "gpu": {
+      "bf16_matmul_8192_TFLOPs": 2.44,
+      "fp16_matmul_8192_TFLOPs": 23.67,
+      "fp32_matmul_8192_TFLOPs": 4.16,
+      "h2d_pageable_GBps": 6.7,
+      "h2d_pinned_GBps": 12.3,
+      "hbm_copy_GBps": 219.7,
+      "tf32_matmul_8192_TFLOPs": 4.08,
+      "vram_free_GiB": 14.41,
+      "vram_total_GiB": 14.56
+    },
+    "tpu": null
+  },
+  "cgroup_limits": {
+    "cpu_max": "max 100000",
+    "memory_high": "max",
+    "memory_max": "max",
+    "pids_max": "62608"
+  },
+  "cpu": {
+    "affinity_cpus": 8,
+    "isa": {
+      "amx_bf16": false,
+      "amx_int8": false,
+      "avx2": true,
+      "avx512bf16": false,
+      "avx512f": true
+    },
+    "logical_cpus": 8,
+    "model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "physical_cores": 4,
+    "smt_ratio": 2.0,
+    "sockets": 1
+  },
+  "disk": {
+    "/": {
+      "free_GiB": 193.1,
+      "total_GiB": 235.7
+    },
+    "/content": {
+      "free_GiB": 193.1,
+      "total_GiB": 235.7
+    },
+    "/dev/shm": {
+      "free_GiB": 24.6,
+      "total_GiB": 24.6
+    },
+    "/tmp": {
+      "free_GiB": 193.1,
+      "total_GiB": 235.7
+    }
+  },
+  "env_of_interest": {
+    "COLAB_BACKEND_VERSION": "next",
+    "COLAB_ENABLE_SSH": "1",
+    "COLAB_FILE_HANDLER_ADDR": "localhost:3453",
+    "COLAB_GPU": "1",
+    "COLAB_IMAGE_TYPE": "gpu",
+    "COLAB_JUPYTER_IP": "172.28.0.12",
+    "COLAB_JUPYTER_TOKEN": "<redacted>",
+    "COLAB_JUPYTER_TRANSPORT": "ipc",
+    "COLAB_KERNEL_MANAGER_PROXY_HOST": "172.28.0.12",
+    "COLAB_KERNEL_MANAGER_PROXY_PORT": "6000",
+    "COLAB_LANGUAGE_SERVER_PROXY": "/usr/colab/bin/language_service",
+    "COLAB_RELEASE_TAG": "release-colab-external-images_20261026-145216_RC00",
+    "COLAB_WARMUP_DEFAULTS": "1",
+    "CUDA_VERSION": "13.0.3",
+    "NVIDIA_DRIVER_CAPABILITIES": "compute,utility",
+    "NVIDIA_PRODUCT_NAME": "CUDA",
+    "NVIDIA_REQUIRE_CUDA": "cuda>=13.0 brand=unknown,driver>=535,driver<536 brand=grid,driver>=535,driver<536 brand=tesla,driver>=535,driver<536 brand=nvidia,driver>=535,driver<536 brand=quadro,driver>=535,driver<536 brand=quadrortx,driver>=535,driver<536 brand=nvidiartx,driver>=535,driver<536 brand=vapps,driver>=535,driver<536 brand=vpc,driver>=535,driver<536 brand=vcs,driver>=535,driver<536 brand=vws,driver>=535,driver<536 brand=cloudgaming,driver>=535,driver<536 brand=unknown,driver>=550,driver<551 brand=grid,driver>=550,driver<551 brand=tesla,driver>=550,driver<551 brand=nvidia,driver>=550,driver<551 brand=quadro,driver>=550,driver<551 brand=quadrortx,driver>=550,driver<551 brand=nvidiartx,driver>=550,driver<551 brand=vapps,driver>=550,driver<551 brand=vpc,driver>=550,driver<551 brand=vcs,driver>=550,driver<551 brand=vws,driver>=550,driver<551 brand=cloudgaming,driver>=550,driver<551 brand=unknown,driver>=565,driver<566 brand=grid,driver>=565,driver<566 brand=tesla,driver>=565,driver<566 brand=nvidia,driver>=565,driver<566 brand=quadro,driver>=565,driver<566 brand=quadrortx,driver>=565,driver<566 brand=nvidiartx,driver>=565,driver<566 brand=vapps,driver>=565,driver<566 brand=vpc,driver>=565,driver<566 brand=vcs,driver>=565,driver<566 brand=vws,driver>=565,driver<566 brand=cloudgaming,driver>=565,driver<566 brand=unknown,driver>=570,driver<571 brand=grid,driver>=570,driver<571 brand=tesla,driver>=570,driver<571 brand=nvidia,driver>=570,driver<571 brand=quadro,driver>=570,driver<571 brand=quadrortx,driver>=570,driver<571 brand=nvidiartx,driver>=570,driver<571 brand=vapps,driver>=570,driver<571 brand=vpc,driver>=570,driver<571 brand=vcs,driver>=570,driver<571 brand=vws,driver>=570,driver<571 brand=cloudgaming,driver>=570,driver<571 brand=unknown,driver>=575,driver<576 brand=grid,driver>=575,driver<576 brand=tesla,driver>=575,driver<576 brand=nvidia,driver>=575,driver<576 brand=quadro,driver>=575,driver<576 brand=quadrortx,driver>=575,driver<576 brand=nvidiartx,driver>=575,driver<576 brand=vapps,driver>=575,driver<576 brand=vpc,driver>=575,driver<576 brand=vcs,driver>=575,driver<576 brand=vws,driver>=575,driver<576 brand=cloudgaming,driver>=575,driver<576",
+    "NVIDIA_VISIBLE_DEVICES": "all",
+    "TPU_SKIP_MDS_QUERY": "1"
+  },
+  "gpu": {
+    "count": 1,
+    "gpus": [
+      {
+        "compute_cap": "7.5",
+        "driver": "580.82.07",
+        "memory_total": "15360 MiB",
+        "name": "Tesla T4",
+        "pcie_gen_max": "3",
+        "pcie_width_max": "16",
+        "persistence_mode": "Disabled",
+        "power_limit": "70.00 W",
+        "sm_clock_max_mhz": "1590 MHz"
+      }
+    ]
+  },
+  "hostname": "9507fd561aff",
+  "kernel": "6.6.159+",
+  "memory": {
+    "MemAvailable_GiB": 49.61,
+    "MemTotal_GiB": 50.99,
+    "SwapTotal_GiB": 0.0
+  },
+  "os": "Ubuntu 24.04.4 LTS",
+  "packages": {
+    "_total_packages": 211,
+    "flax": "0.11.2"
+  },
+  "probe_version": 3,
+  "probed_at_utc": "2026-10-28T06:56:22Z",
+  "python": "3.13.16",
+  "requested_accelerator": "t4-highmem",
+  "torch": {
+    "capability": "7.5",
+    "cuda_available": true,
+    "cuda_version": "13.0",
+    "device_name": "Tesla T4",
+    "sm_count": 40,
+    "version": "2.11.0+cu130",
+    "vram_GiB": 14.56
+  },
+  "tpu": {
+    "accel_devices": "none",
+    "device_count": 1,
+    "device_kinds": [
+      "Tesla T4"
+    ],
+    "jax_version": "0.11.1",
+    "platform": "gpu"
+  },
+  "uptime_s": 335.06
+}
+AGC_JSON_END

@@ -1,0 +1,13 @@
+{
+  "label": "l4",
+  "new_flags": "--gpu L4",
+  "alloc_seconds": 3,
+  "alloc_rc": 0,
+  "session_line": "[agc-l4-207593] gpu-l4-s-ass1b0-3s4i4duxcwwa | Hardware: L4 | Shape: Standard | Variant: GPU",
+  "cu_per_hour": 1.54,
+  "balance_at_start": 84.75,
+  "balance_after_work": 84.75,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.75 compute units Usage rate: 1.54/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.75 compute units Usage rate: 1.54/hr Active assignments: 1"
+}

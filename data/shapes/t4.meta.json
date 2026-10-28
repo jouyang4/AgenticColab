@@ -1,0 +1,13 @@
+{
+  "label": "t4",
+  "new_flags": "--gpu T4",
+  "alloc_seconds": 3,
+  "alloc_rc": 0,
+  "session_line": "[agc-t4-207216] gpu-t4-s-usw1b1-18tiddhj2hkfw | Hardware: T4 | Shape: Standard | Variant: GPU",
+  "cu_per_hour": 1.07,
+  "balance_at_start": 84.78,
+  "balance_after_work": 84.78,
+  "active_assignments_while_live": 1,
+  "usage_raw_live": "Current balance: 84.78 compute units Usage rate: 1.07/hr Active assignments: 1",
+  "usage_raw_after": "Current balance: 84.78 compute units Usage rate: 1.07/hr Active assignments: 1"
+}

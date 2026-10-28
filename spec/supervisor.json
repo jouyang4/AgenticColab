@@ -1,0 +1,134 @@
+{
+  "problem": "A job runs for hours on a machine that can be reclaimed, over a control channel that can drop. The supervisor must not confuse the two.",
+  "checklist": [
+    "every CLI call wrapped in coreutils `timeout` (--timeout does NOT bound a lost socket)",
+    "transfers given their own, larger timeout budget",
+    "work detached on the VM with `setsid`; polls short and bounded",
+    "an empty poll triggers a retried liveness check, never a stop",
+    "no `stop` in any failure path",
+    "kill/restart logic in script files with bracketed `pgrep` patterns; no pattern reuse",
+    "`flock` so a second supervisor cannot race the first",
+    "every stage idempotent and skippable",
+    "checkpoint on state-change, atomically, with the FULL restart state",
+    "results merged cumulatively, never overwritten",
+    "success gated on exit status with `pipefail`",
+    "verification reads changed state, never a filtered log",
+    "`colab new` output never suppressed",
+    "explicit stop PLUS `colab usage` showing 0 assignments"
+  ],
+  "sections": [
+    {
+      "id": 1,
+      "title": "Wrap every CLI call in an external timeout",
+      "points": [
+        "`colab exec --timeout N` bounds code execution, not a lost websocket. On `RuntimeError: Connection was lost.` the call can block indefinitely and ignore its own timeout.",
+        "Transfers need a separate, larger budget. A 300 s cap cannot upload a 500 MB checkpoint, and the failure presents as `restore found no checkpoint` -> restart from zero."
+      ],
+      "code": [
+        {"lang": "bash", "body": "cc() { local t=$1; shift; HOME=\"$CLI_HOME\" timeout \"$t\" colab --auth=oauth2 \"$@\"; }\n\ncc 90   status   -s \"$SESS\"\ncc 300  upload   -s \"$SESS\" ./payload.py /content/payload.py\ncc 1200 download -s \"$SESS\" /content/big_ckpt.tgz ./ckpt.tgz"}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Never hold one long exec open: detach and poll",
+      "points": [
+        "Detach on the VM with `setsid` (or nohup + start_new_session) so the work is outside the CLI's process group, and poll with short bounded calls. A dropped poll then costs nothing.",
+        "If the work must stream instead, print a heartbeat every ~8 s. A job that emits nothing for minutes is the one whose websocket drops."
+      ],
+      "code": [
+        {"lang": "bash", "body": "LAUNCH=$(cat <<'PY'\nimport subprocess\ncmd = (\"cd /content && setsid nohup python3 job.py \"\n       \"> /content/job.out 2>&1 < /dev/null & echo $!\")\np = subprocess.run([\"bash\",\"-lc\",cmd], capture_output=True, text=True)\nprint(\"PID\", p.stdout.strip())\nPY\n)\nprintf '%s\\n' \"$LAUNCH\" | cc 120 exec -s \"$SESS\"\n\nfor i in $(seq 1 500); do\n  sleep 30\n  P=$(printf '%s\\n' \"import os;p='/content/job.out';print(open(p).read()[-600:] if os.path.exists(p) else 'NOFILE')\" \\\n        | cc 90 exec -s \"$SESS\")\n  grep -q JOB_COMPLETE <<<\"$P\" && break\ndone"}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "An empty poll means the websocket dropped, not that the VM died",
+      "points": [
+        "The detached job keeps running whether or not it can be seen. Stopping and re-allocating on a failed poll destroys a healthy VM and all in-flight work.",
+        "On N consecutive empty polls, verify with a retried listing (or side-effect-free `colab usage`) before concluding anything.",
+        "Never `stop` a live VM in any retry or failure path. Stop only on genuine completion.",
+        "Stay on the same VM across work units: relaunch the next unit idempotently rather than re-bootstrapping. That avoids re-uploading a large checkpoint.",
+        "A CLI usage error is indistinguishable from a dropped poll if the only test is `is the output empty?`. Test for it explicitly.",
+        "An `exec` can hang on the REPLY after the command has already run on the VM. A timed-out or errored call is therefore not evidence that the work did not happen: check state, and make the launch idempotent so a retry is safe by construction.",
+        "Burn a throwaway warm-up exec (`print('WARM')`) right after allocation, so the fragile first call is a disposable one.",
+        "Keep exec payloads small. More code to send and run means a longer window in which the reply can be lost. Upload the logic as a FILE and exec a one-liner that invokes it: smaller payload, no quoting problems, no self-match trap.",
+        "Poll for the smallest possible signal. A yes/no answer survives a marginal connection better than a log tail, and it is all the poller needs."
+      ],
+      "code": [
+        {"lang": "bash", "body": "if [[ -z \"$P\" ]]; then\n  ALIVE=0\n  for _ in 1 2 3; do\n    cc 90 sessions 2>/dev/null | grep -q \"$SESS\" && { ALIVE=1; break; }\n    sleep 5\n  done\n  (( ALIVE )) && continue      # keep polling; the run continues\n  # only now consider re-bootstrapping\nfi\n\nif grep -qE 'Usage: colab|unexpected extra argument|No such option' <<<\"$P\"; then\n  echo \"invocation bug, not a network event\"; break\nfi"},
+        {"lang": "bash", "body": "colab upload -s \"$SESS\" ./launch.sh /content/launch.sh\necho 'import subprocess;print(subprocess.run([\"bash\",\"/content/launch.sh\"],capture_output=True,text=True).stdout)' \\\n  | colab exec -s \"$SESS\""},
+        {"label": "launch guard: PID file, not pgrep", "lang": "python", "body": "import os, subprocess\n\nPID = \"/content/job.pid\"\nalive = False\nif os.path.exists(PID):\n    try:\n        os.kill(int(open(PID).read().strip()), 0)    # signal 0 = existence check\n        alive = True\n    except Exception:\n        alive = False\n\nif alive:\n    print(\"ALREADY_RUNNING\")\nelif os.path.exists(\"/content/out/result.json\"):\n    print(\"ALREADY_DONE\")\nelse:\n    cmd = (\"cd /content && setsid nohup python3 job.py > /content/job.out 2>&1 < /dev/null & \"\n           \"echo $! > /content/job.pid; cat /content/job.pid\")\n    p = subprocess.run([\"bash\", \"-lc\", cmd], capture_output=True, text=True)\n    print(\"LAUNCHED\", p.stdout.strip())"},
+        {"label": "smallest poll", "lang": "python", "body": "import os\nprint(\"DONE\" if os.path.exists(\"/content/agc_result.json\") else \"RUN\")"}
+      ],
+      "note": "A `pgrep -f` guard cannot work for a LAUNCH: the pattern necessarily appears in the launching command line, so even the bracketed-regex trick self-matches and reports ALREADY_RUNNING forever while nothing starts. A PID file plus a result-file check has three unambiguous states: running, already finished, not started."
+    },
+    {
+      "id": 4,
+      "title": "Make every stage idempotent; guard relaunch carefully",
+      "points": [
+        "Idempotent stages mean rebuilding a lost session re-runs the chain in seconds instead of hours.",
+        "`pkill -f` / `pgrep -f` match the full cmdline of every process including the issuer. Three escalating failures: (1) `bash -lc \"pkill -f watcher.sh; relaunch\"` kills the shell before it relaunches -- exit 15, no output; (2) a `pgrep -f job.sh` guard under `bash -c` finds itself, so the relaunch never happens; (3) the bracket trick `[j]ob.sh` still matches when the literal `job.sh` appears later in the same command line.",
+        "Ship restart/kill logic as script files invoked as `bash /path/script.sh`; never let a kill pattern appear elsewhere in the same command line; verify by re-reading changed STATE, not by the absence of an error.",
+        "Never filter the output of the step being verified. `... | grep -v ... | tail -8` turns a failure into an apparent success: the check reads a truncated log instead of the state that was supposed to change.",
+        "A background subshell `( ... ) &` inherits the parent's cmdline, so two identical `ps` lines may be one driver plus its own helper. Check PPID before concluding there is a duplicate launch."
+      ],
+      "code": [
+        {"lang": "bash", "body": "if pgrep -f '[j]ob\\.py' >/dev/null; then echo \"already running\"; else launch_job; fi"},
+        {"lang": "python", "body": "if os.path.exists(OUT):\n    print(\"STAGE DONE, skipping\"); raise SystemExit(0)"},
+        {"label": "one supervisor only", "lang": "bash", "body": "exec 9>/var/tmp/myjob.lock\nflock -n 9 || { echo \"another supervisor holds the lock\"; exit 0; }"}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Checkpoint on state-change, not on a timer",
+      "points": [
+        "A reclaimed VM should cost at most one in-progress unit. Bank the instant a unit completes: a training loop saves every N steps to a temp path then `os.replace`; an iterative sampler checkpoints per completed iteration; a batch of independent jobs writes one file per result and skips existing ones on restart.",
+        "A fixed poll interval loses whatever finished between the last save and the reap. A checkpoint written only at the END loses the whole run.",
+        "Checkpoint the FULL restart state. A headline state file backed up without the per-unit restart data it needs restores to something that looks complete and then exits immediately at the saved iteration on a fresh VM. Test restore on a fresh machine, not in place.",
+        "Sync incremental outputs every poll. Banking only the final-state object yields, across several VM lifetimes, a result covering only the last fraction of the work.",
+        "Snapshot atomically: tar on the VM, download the tarball. Downloading a file the job is writing gives a torn copy.",
+        "Bank cumulatively. Results come from a succession of VMs, so overwriting one archive destroys an earlier VM's output. Merge into a persistent directory and rebuild any archive from it."
+      ],
+      "code": [
+        {"lang": "bash", "body": "printf '%s\\n' \"import subprocess;subprocess.run(['bash','-lc','cd /content && tar czf state.tgz run_state/ && echo TAR_OK'])\" \\\n  | cc 300 exec -s \"$SESS\"\ncc 1200 download -s \"$SESS\" /content/state.tgz ./snap_$(date +%s).tgz"}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Gate success on the real exit status",
+      "points": [
+        "Gate on `rc == 0`, not on `the output file exists` or `the iteration counter advanced`. Otherwise a crash-loop hides behind a cheerful status line.",
+        "A progress counter inside a database or HDF5 file lags the filesystem, because it flushes at boundaries. During a run, read progress from the artifacts the job is producing."
+      ],
+      "code": [
+        {"lang": "bash", "body": "set -o pipefail\nif ! python3 job.py | tee job.log; then echo \"FAILED\"; exit 1; fi"}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Download before the risky step, not after",
+      "points": [
+        "On <=0.6.0 the handle dies around the hour mark, so anything written after ~50 min of session age may be unreachable. On >=0.7.x the token refreshes itself and that deadline is gone.",
+        "Either way: cut work into units, download after each unit, and never leave the only copy of a result on a machine you do not control.",
+        "Always attempt the download even when the previous exec returned non-zero. The CLI reports failure for cells that completed server-side."
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Never silence colab new",
+      "points": [
+        "A suppressed allocation error turns every downstream step into a misleading `session not found` and discards the message that distinguishes entitlement, quota and capacity -- three problems with three different responses.",
+        "Never `set -e` around an upload in a bootstrap script. A failed large upload aborts the deploy before the extraction step, leaving a session holding tarballs and no scripts, which fails later as `No such file or directory`."
+      ],
+      "code": [
+        {"lang": "bash", "body": "colab new -s \"$SESS\" --gpu L4             # good\ncolab new -s \"$SESS\" --gpu L4 >/dev/null  # never"}
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Assembled control flow (scripts/colab-job.sh)",
+      "code": [
+        {"lang": "text", "body": "flock                                  # one supervisor only\nloop:\n  ensure_session                       # allocate if absent; re-list after any error\n  bootstrap (idempotent)               # skip if marker file exists\n  restore_latest_snapshot              # if any\n  launch_unit (PID-guarded, setsid)\n  poll (bounded timeout, empty != dead)\n    on unit completion:\n      snapshot (tar on VM) -> download -> merge into persistent dir\n  on genuine completion: stop + verify released\n  on confirmed VM loss: re-allocate and resume from last snapshot"}
+      ]
+    }
+  ]
+}
