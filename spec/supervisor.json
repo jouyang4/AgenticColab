@@ -11,6 +11,7 @@
     "every stage idempotent and skippable",
     "checkpoint on state-change, atomically, with the FULL restart state",
     "results merged cumulatively, never overwritten",
+    "a snapshot is banked only if it carries this call's nonce; no stop until the final bank is verified",
     "success gated on exit status with `pipefail`",
     "verification reads changed state, never a filtered log",
     "`colab new` output never suppressed",
@@ -86,7 +87,8 @@
         "Checkpoint the FULL restart state. A headline state file backed up without the per-unit restart data it needs restores to something that looks complete and then exits immediately at the saved iteration on a fresh VM. Test restore on a fresh machine, not in place.",
         "Sync incremental outputs every poll. Banking only the final-state object yields, across several VM lifetimes, a result covering only the last fraction of the work.",
         "Snapshot atomically: tar on the VM, download the tarball. Downloading a file the job is writing gives a torn copy.",
-        "Bank cumulatively. Results come from a succession of VMs, so overwriting one archive destroys an earlier VM's output. Merge into a persistent directory and rebuild any archive from it."
+        "Bank cumulatively. Results come from a succession of VMs, so overwriting one archive destroys an earlier VM's output. Merge into a persistent directory and rebuild any archive from it.",
+        "Prove the snapshot is fresh. Write a nonce into the tree just before the tar and read it back from the downloaded archive. A tar step that never ran (dropped websocket) leaves the previous archive at the same path; it downloads without error and banks as if it were new."
       ],
       "code": [
         {"lang": "bash", "body": "printf '%s\\n' \"import subprocess;subprocess.run(['bash','-lc','cd /content && tar czf state.tgz run_state/ && echo TAR_OK'])\" \\\n  | cc 300 exec -s \"$SESS\"\ncc 1200 download -s \"$SESS\" /content/state.tgz ./snap_$(date +%s).tgz"}
@@ -109,7 +111,8 @@
       "points": [
         "On <=0.6.0 the handle dies around the hour mark, so anything written after ~50 min of session age may be unreachable. On >=0.7.x the token refreshes itself and that deadline is gone.",
         "Either way: cut work into units, download after each unit, and never leave the only copy of a result on a machine you do not control.",
-        "Always attempt the download even when the previous exec returned non-zero. The CLI reports failure for cells that completed server-side."
+        "Always attempt the download even when the previous exec returned non-zero. The CLI reports failure for cells that completed server-side.",
+        "A download that succeeds is not a download of what was just written: check it against a nonce (section 5) before counting the result as banked, and never release the VM on an unverified final bank."
       ]
     },
     {
@@ -127,7 +130,7 @@
       "id": 9,
       "title": "Assembled control flow (scripts/colab-job.sh)",
       "code": [
-        {"lang": "text", "body": "flock                                  # one supervisor only\nloop:\n  ensure_session                       # allocate if absent; re-list after any error\n  bootstrap (idempotent)               # skip if marker file exists\n  restore_latest_snapshot              # if any\n  launch_unit (PID-guarded, setsid)\n  poll (bounded timeout, empty != dead)\n    on unit completion:\n      snapshot (tar on VM) -> download -> merge into persistent dir\n  on genuine completion: stop + verify released\n  on confirmed VM loss: re-allocate and resume from last snapshot"}
+        {"lang": "text", "body": "flock                                  # one supervisor only\nloop:\n  ensure_session                       # allocate if absent; re-list after any error\n  bootstrap (idempotent)               # skip if marker file exists\n  restore_latest_snapshot              # if any\n  launch_unit (PID-guarded, setsid)\n  poll (bounded timeout, empty != dead)\n    on unit completion:\n      snapshot (nonce + tar on VM) -> download -> check nonce -> merge into persistent dir\n  on genuine completion: verified final snapshot (retry, VM kept) -> stop + verify released\n  on confirmed VM loss: re-allocate and resume from last snapshot"}
       ]
     }
   ]

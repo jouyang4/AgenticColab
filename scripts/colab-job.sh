@@ -163,25 +163,42 @@ print(p.stdout.strip(), p.stderr.strip()[:200])
 }
 
 snapshot_and_bank() {
-  local ts; ts=$(date +%s)
-  # tar on the VM: never download a file the job is actively writing
-  ccx 900 "
+  # Returns 0 only for a FRESH snapshot. The tar step writes a nonce into out/
+  # and a download is accepted only if it carries that nonce: /content/snap.tgz
+  # from an earlier call survives a tar step that never ran (dropped websocket),
+  # downloads without error, and would be banked as if it were new.
+  local ts nonce got i
+  for i in 1 2 3; do
+    ts=$(date +%s); nonce="$ts-$i-$RANDOM"
+    # tar on the VM: never download a file the job is actively writing
+    ccx 900 "
 import subprocess
+open('/content/work/out/.snap_nonce', 'w').write('$nonce')
 r = subprocess.run(['bash','-lc','cd /content/work && tar czf /content/snap.tgz out/ state/ 2>/dev/null || tar czf /content/snap.tgz out/; echo TAR_OK'],
                    capture_output=True, text=True)
 print(r.stdout.strip()[-200:])
 " >>"$LOG" 2>&1
-  # always download even if exec reported failure: the CLI reports failure for
-  # cells that completed server-side
-  if ccbig download -s "$SESS" /content/snap.tgz "$BANK/snap_$ts.tgz" >>"$LOG" 2>&1; then
-    say "banked snapshot snap_$ts.tgz"
-    # merge into a persistent dir - never overwrite one archive, results come
-    # from a succession of different VMs
-    mkdir -p "$BANK/merged"
-    tar xzf "$BANK/snap_$ts.tgz" -C "$BANK/merged" 2>/dev/null || true
-  else
-    say "snapshot download failed (will retry next cycle)"
-  fi
+    # always download even if exec reported failure: the CLI reports failure for
+    # cells that completed server-side. The nonce decides, not the exit status.
+    if ccbig download -s "$SESS" /content/snap.tgz "$BANK/snap_$ts.tgz" >>"$LOG" 2>&1; then
+      got=$(tar xzf "$BANK/snap_$ts.tgz" -O out/.snap_nonce 2>/dev/null)
+      if [[ "$got" == "$nonce" ]]; then
+        say "banked snapshot snap_$ts.tgz"
+        # merge into a persistent dir - never overwrite one archive, results come
+        # from a succession of different VMs
+        mkdir -p "$BANK/merged"
+        tar xzf "$BANK/snap_$ts.tgz" -C "$BANK/merged" 2>/dev/null || true
+        return 0
+      fi
+      say "snapshot is STALE (nonce '${got:-none}', expected '$nonce'): the tar step did not run; discarded"
+      rm -f "$BANK/snap_$ts.tgz"
+    else
+      say "snapshot download failed"
+    fi
+    sleep 20
+  done
+  say "no fresh snapshot after 3 attempts"
+  return 1
 }
 
 # --------------------------------------------------------------- main loop
@@ -189,6 +206,7 @@ print(r.stdout.strip()[-200:])
 START=$(date +%s)
 EMPTY_RUN=0
 COMPLETE=0
+FINAL_BANK_FAILED=0
 
 while :; do
   ELAPSED_H=$(( ($(date +%s) - START) / 3600 ))
@@ -217,7 +235,17 @@ print(open(p).read()[-800:] if os.path.exists(p) else 'NOFILE')" 2>&1)
     fi
 
     if grep -q 'JOB_COMPLETE' <<<"$P"; then
-      say "job reports JOB_COMPLETE"; COMPLETE=1; snapshot_and_bank; break
+      say "job reports JOB_COMPLETE"
+      # release only after a VERIFIED final bank: a finished job whose results
+      # are still on the VM is the one case where stopping destroys work
+      until snapshot_and_bank; do
+        if (( ($(date +%s) - START) / 3600 >= MAX_HOURS )); then
+          say "final bank still failing at max runtime"; FINAL_BANK_FAILED=1; break
+        fi
+        say "final bank failed; VM kept, retrying in 120s"; sleep 120
+      done
+      (( FINAL_BANK_FAILED )) || COMPLETE=1
+      break
     fi
 
     if [[ -z "${P// /}" || "$P" == *NOFILE* ]]; then
@@ -248,7 +276,7 @@ print(open(p).read()[-800:] if os.path.exists(p) else 'NOFILE')" 2>&1)
     fi
   done
 
-  (( COMPLETE )) && break
+  (( COMPLETE || FINAL_BANK_FAILED )) && break
 done
 
 # release, then verify released - only on genuine completion
@@ -262,6 +290,9 @@ if (( COMPLETE )); then
     say "WARNING: $A assignment(s) still active - check for an orphan"
   fi
   say "=== job $JOB COMPLETE; results merged in $BANK/merged ==="
+elif (( FINAL_BANK_FAILED )); then
+  say "=== job $JOB finished but its results are NOT banked; session left ALONE on purpose ==="
+  say "    bank by hand before stopping: the only copy of the results is on the VM"
 else
   say "=== job $JOB ended without JOB_COMPLETE; session left ALONE on purpose ==="
   say "    inspect with: HOME=$CLI_HOME $CLI --auth=$AUTH sessions"
