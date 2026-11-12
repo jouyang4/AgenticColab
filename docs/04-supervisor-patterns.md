@@ -16,6 +16,7 @@ A job runs for hours on a machine that can be reclaimed, over a control channel 
 - [ ] every stage idempotent and skippable
 - [ ] checkpoint on state-change, atomically, with the FULL restart state
 - [ ] results merged cumulatively, never overwritten
+- [ ] a snapshot is banked only if it carries this call's nonce; no stop until the final bank is verified
 - [ ] success gated on exit status with `pipefail`
 - [ ] verification reads changed state, never a filtered log
 - [ ] `colab new` output never suppressed
@@ -158,6 +159,7 @@ flock -n 9 || { echo "another supervisor holds the lock"; exit 0; }
 - Sync incremental outputs every poll. Banking only the final-state object yields, across several VM lifetimes, a result covering only the last fraction of the work.
 - Snapshot atomically: tar on the VM, download the tarball. Downloading a file the job is writing gives a torn copy.
 - Bank cumulatively. Results come from a succession of VMs, so overwriting one archive destroys an earlier VM's output. Merge into a persistent directory and rebuild any archive from it.
+- Prove the snapshot is fresh. Write a nonce into the tree just before the tar and read it back from the downloaded archive. A tar step that never ran (dropped websocket) leaves the previous archive at the same path; it downloads without error and banks as if it were new.
 
 ```bash
 printf '%s\n' "import subprocess;subprocess.run(['bash','-lc','cd /content && tar czf state.tgz run_state/ && echo TAR_OK'])" \
@@ -180,6 +182,7 @@ if ! python3 job.py | tee job.log; then echo "FAILED"; exit 1; fi
 - On <=0.6.0 the handle dies around the hour mark, so anything written after ~50 min of session age may be unreachable. On >=0.7.x the token refreshes itself and that deadline is gone.
 - Either way: cut work into units, download after each unit, and never leave the only copy of a result on a machine you do not control.
 - Always attempt the download even when the previous exec returned non-zero. The CLI reports failure for cells that completed server-side.
+- A download that succeeds is not a download of what was just written: check it against a nonce (section 5) before counting the result as banked, and never release the VM on an unverified final bank.
 
 ## 8. Never silence colab new
 
@@ -202,7 +205,7 @@ loop:
   launch_unit (PID-guarded, setsid)
   poll (bounded timeout, empty != dead)
     on unit completion:
-      snapshot (tar on VM) -> download -> merge into persistent dir
-  on genuine completion: stop + verify released
+      snapshot (nonce + tar on VM) -> download -> check nonce -> merge into persistent dir
+  on genuine completion: verified final snapshot (retry, VM kept) -> stop + verify released
   on confirmed VM loss: re-allocate and resume from last snapshot
 ```

@@ -155,3 +155,10 @@ Failures that succeed: they report plausible wrong numbers, or destroy work whil
 
 - **symptom:** quota consumed, later allocations 412.
 - **fix:** explicit `colab stop` PLUS a check that `colab usage` shows 0.00/hr and 0 active assignments.
+
+## 23. Banking a stale snapshot, then releasing the VM
+
+- **symptom:** the supervisor logs `banked snapshot` and stops the session on JOB_COMPLETE; the bank holds an earlier snapshot and every unit finished since then is gone.
+- **reality:** the tar step died with `RuntimeError: Connection was lost.` and never ran, so /content/snap.tgz was still the PREVIOUS snapshot, and downloading it succeeded (observed on CLI 0.7.5: the final download was byte-identical to one taken hours earlier). `always download even if exec failed` is right, but a successful download proves nothing about freshness.
+- **fix:** write a nonce into the tree just before the tar, read it back from the downloaded archive (`tar xzf snap.tgz -O out/.snap_nonce`), discard on mismatch and retry; release the VM only after a verified final bank and leave it running otherwise.
+- **ref:** [04-supervisor-patterns.md](04-supervisor-patterns.md)
